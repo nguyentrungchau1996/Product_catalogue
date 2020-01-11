@@ -1,0 +1,25 @@
+{
+  "short_name": "React App",
+  "name": "Product Catalogue extension",
+  "icons": {
+    "192": "logo192.png",
+    "512": "logo512.png"
+  },
+  "manifest_version": 2,
+  "author": "chaunt",
+  "version": "1.0.0",
+  "description": "Create Chrome extension app",
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": false
+  },
+  "content_scripts": [{
+    "matches": ["<all_urls>"],
+    "js": ["content.js"]
+  }],
+  "browser_action": {
+    "default_popup": "index.html"
+  },
+  "content_security_policy": "script-src 'self' 'sha256-r74VFqmIK5EpA7TSDm/oLXoXUAQR9sMZxDNKijrgw8o='; object-src 'self'",
+  "permissions": ["activeTab"]
+}
