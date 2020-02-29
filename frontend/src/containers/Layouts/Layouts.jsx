@@ -8,8 +8,11 @@ import { connect, useDispatch } from "react-redux";
 import Products from "../../components/Products/Products";
 import PaginationPage from "../../components/PaginationBar/PaginationBar";
 
+// Services
+import ProductsService from '../../services/Products';
+
 // Actions
-import { fetchProducts } from "../../Redux/Action/Products";
+import {actFetchProducts} from '../../Redux/Action/Products';
 
 const useStyles = createUseStyles({
   layoutsContainer: {
@@ -40,18 +43,22 @@ const useStyles = createUseStyles({
 
 const Layouts = props => {
   const styles = useStyles();
-
-  const dispatch = useDispatch();
-
   const [currentPage, setCurrentPage] = useState(0);
-
-  useEffect(() => {
-    dispatch(fetchProducts());
-  }, [dispatch]);
+  const dispatch = useDispatch();
 
   const callBackGetCurrentPage = newStateFromChild => {
     setCurrentPage(newStateFromChild);
   };
+
+  useEffect(async() => {
+    let response = await ProductsService.fetchProducts();
+
+    if (response && response.data) {
+      let products = response.data;
+
+      dispatch(actFetchProducts(products));
+    }
+  }, [dispatch]);
 
   return (
     <Container className={styles["layoutsContainer"]}>
@@ -80,4 +87,8 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps, null)(Layouts);
+const mapDispatchToProps = {
+  actFetchProducts
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Layouts);

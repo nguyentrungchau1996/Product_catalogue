@@ -30,8 +30,12 @@ const getUrlOfProductsInAPage = async () => {
 
   if (categoryList) {
     categoryList.forEach(category => {
+      const params = new URLSearchParams({
+        src: `c.${category.id}.hamburger_menu_fly_out_banner`
+      });
+
       urlOfProductsInAPage.push(
-        `https://tiki.vn/${category.url_key}/c${category.id}?src=c.${category.id}.hamburger_menu_fly_out_banner`
+        `https://tiki.vn/${category.url_key}/c${category.id}?${params}`
       );
     });
   }

@@ -1,4 +1,4 @@
-// ACTIONS
+// Actions
 import { FETCH_PRODUCTS } from "../Action/ActionType";
 
 let initialState = {
@@ -8,8 +8,12 @@ let initialState = {
 const ProductReducer = (state = initialState, action) => {
     switch(action.type) {
         case FETCH_PRODUCTS:
-            state.productsList = action.payload;
-            return {...state};
+            const draftState = {...state};
+            
+            draftState.productsList = action.payload;
+            state = {...draftState};
+
+            return state;
 
         default: 
             return state;

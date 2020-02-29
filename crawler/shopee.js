@@ -26,8 +26,18 @@ const getCategoryList = async () => {
 };
 
 const getProducts = async (catid, url) => {
+  const params = new URLSearchParams({
+    by: 'relevancy',
+    limit: '50', 
+    match_id: catid,
+    newest: '0',
+    order: 'desc',
+    page_type: 'search',
+    version: '2'
+  });
+
   const product = await Axios.get(
-    `https://shopee.vn/api/v2/search_items/?by=relevancy&limit=50&match_id=${catid}&newest=0&order=desc&page_type=search&version=2`,
+    `https://shopee.vn/api/v2/search_items/?${params}`,
     {
       headers: {
         Referer: url
@@ -74,11 +84,15 @@ const createUrlCategoryArr = () => {
       let encodedDisplayName = encodeURI(arrDisplayName);
 
       for (let pageNumber = 0; pageNumber <= 99; pageNumber++) {
+        const params = new URLSearchParams({
+          page: pageNumber
+        });
+
         urlCategoryArr = [
           ...urlCategoryArr,
           {
             catid: shopeeCategoryArr[i].catid,
-            url: `https://shopee.vn/${encodedDisplayName}-cat.${shopeeCategoryArr[i].catid}?page=${pageNumber}`
+            url: `https://shopee.vn/${encodedDisplayName}-cat.${shopeeCategoryArr[i].catid}?${params}`
           }
         ];
       }
