@@ -3,9 +3,7 @@ chrome.runtime.onConnect.addListener(port => {
     if (res && res.message && res.messageId) {
       switch (res.message) {
         case "lazada": {
-          const script = document.querySelectorAll(
-            'script[type="application/ld+json"]'
-          );
+          const script = document.querySelectorAll('script[type="application/ld+json"]');
 
           if (script && script.length) {
             const parsedHtml = JSON.parse(script[0].innerHTML);
@@ -45,10 +43,9 @@ chrome.runtime.onConnect.addListener(port => {
 
         case "tiki": {
           const headElement = document.querySelector("head");
-          const scriptElementArray =
-            headElement && headElement.querySelectorAll("script");
+          const scriptElementArray = headElement && headElement.querySelectorAll("script");
 
-          let foundScriptElement = [];
+          let foundedScripElement = [];
 
           if (scriptElementArray && scriptElementArray.length) {
             scriptElementArray.forEach(script => {
@@ -60,25 +57,44 @@ chrome.runtime.onConnect.addListener(port => {
                 !script["id"] &&
                 !script["crossorigin"]
               ) {
-                foundScriptElement = [...foundScriptElement, script];
+                let parsedScrip = script.innerHTML.trim();
+
+                if (parsedScrip) {
+                  return (foundedScripElement = [...foundedScripElement, parsedScrip]);
+                }
               }
             });
           }
 
-          foundScriptElement.filter(script => {
-            let parsedScript = script.innerHTML;
+          foundedScripElement.map((script, index) => {
+            if (script) {
+              let ga = () => {};
 
-            if (parsedScript) {
-              let index = parsedScript.indexOf('dataLayer');
+              eval(script);
 
-              if (index !== -1) {
-                return script;
+              if (dataLayer.length) {
+                return dataLayer;
               }
             }
-          })
+          });
 
-          console.log('foundScriptElement', foundScriptElement);
-          console.log('length', foundScriptElement.length);
+          let foundedItem = (dataLayer.length && dataLayer.find(item => !!item["ecommerce"])) || {};
+
+          if (foundedItem.ecommerce && foundedItem.ecommerce.detail && foundedItem.ecommerce.detail.products) {
+            let products = foundedItem.ecommerce.detail.products || [];
+
+            if (products.length === 1) {
+              const payload = {
+                name: products[0].name || "",
+                price: +products[0].price || 0
+              };
+
+              port.postMessage({
+                ...payload,
+                messageId: res.messageId || ""
+              });
+            }
+          }
 
           break;
         }
