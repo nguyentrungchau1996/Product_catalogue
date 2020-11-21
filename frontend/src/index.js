@@ -62,6 +62,8 @@ const postMessagePromise = (port, message) => {
   const uuid = uuidv4();
   let resolved = false;
 
+  console.log("Co vao day ko?");
+
   const handler = (response, resolve) => {
     if (response.messageId === uuid) {
       resolved = true;
