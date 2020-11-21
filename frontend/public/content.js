@@ -66,7 +66,7 @@ chrome.runtime.onConnect.addListener(port => {
             });
           }
 
-          foundedScripElement.map((script, index) => {
+          foundedScripElement.map(script => {
             if (script) {
               let ga = () => {};
 
